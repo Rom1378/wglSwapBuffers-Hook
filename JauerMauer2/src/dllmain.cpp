@@ -139,11 +139,6 @@ std::vector<glm::vec2> w2sEtt(std::vector<Entity> etts) {
 	RECT window_rect;
 	GetWindowRect(FindWindowA(nullptr, "Minecraft 1.7.10"), &window_rect);
 
-	//ActiveRenderInfo activeRenderInfo(mc2, mc2->getEnv());
-	//std::cout << window_rect.left << etts.size() << std::endl;
-	//std::cout << window_rect.bottom << etts.size() << std::endl;
-	//std::cout << window_rect.right << etts.size() << std::endl;
-	//std::cout << window_rect.top << etts.size() << std::endl;
 	glm::vec2 screenPos;
 	std::vector<glm::vec2> screenPoss;
 
@@ -155,7 +150,6 @@ std::vector<glm::vec2> w2sEtt(std::vector<Entity> etts) {
 		glm::vec3 ettPos(et.getPosX(), et.getPosY(), et.getPosZ());
 		ettPos -= glm::vec3(player.getPosX(), player.getPosY(), player.getPosZ());
 
-		//if (!WorldToScreen (ettPos,screenPos,model,proj, glm::vec4(window_rect.left, window_rect.bottom, window_rect.right, window_rect.top))) {
 		if (!WorldToScreen(ettPos, screenPos, model, proj, viewport)) {
 			//std::cout << "world to screen failed" << std::endl;
 		}
@@ -173,8 +167,13 @@ void updateGameData() {
 	jobject theworld = getTheWorld();
 
 	for (uint32_t i = 0; i < len; i++) {
-		entityList.push_back({ theworld,loadedEntitilist.get(i) });
+		jobject entityObj = loadedEntitilist.get(i);
+		if (entityObj != nullptr) {
+			entityList.emplace_back(theworld, entityObj);
+			env->DeleteLocalRef(entityObj);
+		}
 	}
+
 	player = Entity(theworld, loadedEntitilist.get(0));
 	std::lock_guard<std::mutex> lock(ettListMutex);
 	ettListScreenPos = w2sEtt(entityList);
@@ -239,14 +238,12 @@ DWORD WINAPI inject(HMODULE hmodule) {
 
 		}
 		updateGameData();
-		Sleep(10);
+		Sleep(5);
 	}
 
 
+	entityList.clear();
 	hook::cleanup();
-
-	//JoeMauer* joe = new JoeMauer();
-	//delete joe;
 	fclose(stdout);
 	fclose(stdin);
 	fclose(stderr);
