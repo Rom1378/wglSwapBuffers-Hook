@@ -36,7 +36,7 @@
     <ClInclude Include="src\MCH.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="src\GLF.h">
+    <ClInclude Include="src\GLH.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="src\JavaList.h">

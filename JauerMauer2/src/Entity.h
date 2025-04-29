@@ -33,7 +33,7 @@ public:
             this->objectEntity = env->NewGlobalRef(objectEntity);
 
             // Find and cache entity class and method IDs
-            jclass localEntityClass = getObject("net.minecraft.entity.Entity");
+            jclass localEntityClass = MCH::getObject("net.minecraft.entity.Entity");
             if (localEntityClass != nullptr) {
                 jcEntity = (jclass)env->NewGlobalRef(localEntityClass);
                 env->DeleteLocalRef(localEntityClass);

@@ -177,7 +177,7 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="src\Entity.h" />
-    <ClInclude Include="src\GLF.h" />
+    <ClInclude Include="src\GLH.h" />
     <ClInclude Include="src\Hook.h" />
     <ClInclude Include="src\JavaList.h" />
     <ClInclude Include="src\MCH.h" />

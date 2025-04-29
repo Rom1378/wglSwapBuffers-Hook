@@ -3,7 +3,7 @@
 //#include "GLHelper.h"
 #include "Hook.h"
 
-#include "GLF.h"
+#include "GLH.h"
 #include "W2S.h"
 #include "JavaList.h"
 #include "Entity.h"
@@ -16,7 +16,6 @@ uintptr_t m_wgl_swap_buffers = 0;
 JNIEnv* env;
 JavaVM* jvm;
 
-GLubyte red[3] = { 255, 0, 0 };
 
 std::vector<Entity> entityList;
 Entity player;
@@ -30,8 +29,8 @@ std::mutex ettListMutex;
 bool initialized = false;
 
 BOOL   __stdcall detourFunction(HDC dc) {
-	SetupOrtho();
-	DrawOutLine(10, 10, 20, 20, 2.0f, red);
+	GLH::SetupOrtho();
+	GLH::DrawOutLine(10, 10, 20, 20, 2.0f, GLH::white, 1);
 
 
 	//draw ettscreenpos
@@ -42,11 +41,12 @@ BOOL   __stdcall detourFunction(HDC dc) {
 	for (auto& pos : ettListScreenPos) {
 		//DrawOutLine(pos.x, pos.y, 20, 20, 2.0f, red);
 
-		drawLine((window_rect.right - window_rect.left) / 2, (window_rect.bottom - window_rect.top) / 2,
-			pos.x, pos.y, 2.0f, red);
+		GLH::DrawLine((window_rect.right - window_rect.left) / 2, (window_rect.bottom - window_rect.top) / 2,
+			pos.x, pos.y, 2.0f, GLH::red,0.5);
+		GLH::DrawCircle(pos.x, pos.y, 3.0f, 6, GLH::green,0.7);
 	}
 
-	RestoreGL();
+	GLH::RestoreGL();
 
 	return original_wgl_swap_buffers(dc); // redirect to trampoline with correct args
 }
@@ -142,9 +142,9 @@ std::vector<glm::vec2> w2sEtt(std::vector<Entity> etts) {
 	glm::vec2 screenPos;
 	std::vector<glm::vec2> screenPoss;
 
-	std::vector<float> model = Get_MODELVIEW();
-	std::vector<float> proj = Get_PROJECTION();
-	std::vector<int> viewport = Get_VIEWPORT();
+	std::vector<float> model = MCH::Get_MODELVIEW();
+	std::vector<float> proj = MCH::Get_PROJECTION();
+	std::vector<int> viewport = MCH::Get_VIEWPORT();
 
 	for (auto& et : etts) {
 		glm::vec3 ettPos(et.getPosX(), et.getPosY(), et.getPosZ());
@@ -162,9 +162,9 @@ std::vector<glm::vec2> w2sEtt(std::vector<Entity> etts) {
 
 void updateGameData() {
 	entityList.clear();
-	JavaList loadedEntitilist(getTheWorld(), "field_72996_f", "Ljava/util/List;");
+	JavaList loadedEntitilist(MCH::getTheWorld(), "field_72996_f", "Ljava/util/List;");
 	uint32_t len = loadedEntitilist.getSize();
-	jobject theworld = getTheWorld();
+	jobject theworld = MCH::getTheWorld();
 
 	for (uint32_t i = 0; i < len; i++) {
 		jobject entityObj = loadedEntitilist.get(i);
