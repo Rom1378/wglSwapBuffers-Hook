@@ -83,20 +83,6 @@ namespace hook::patching {
 		hookData.detourFunction = detour;
 		hookData.originalFunction = hookData.trampoline;
 
-		//original_wgl_swap_buffers = (swap_buffers_fnsig)trampoline;
- 
-	 	//*(uintptr_t*)(movraxjmprax.data() + 2) = detour; // Set the detour address in movraxjmprax
-
-		//calculate nb nop to write
-		//uint32_t nbNops = nbStolenBytes - movraxjmprax.size();
-
-		// Write the new bytes
-		//DWORD oldProtect;
-		//VirtualProtect((LPVOID)target, movraxjmprax.size(), PAGE_EXECUTE_READWRITE, &oldProtect);
-		//memcpy((void*)target, movraxjmprax.data(), movraxjmprax.size());
-		//memset((void*)(target + movraxjmprax.size()), 0x90, nbNops);
-		//VirtualProtect((LPVOID)target, movraxjmprax.size(), oldProtect, &oldProtect);
-		//FlushInstructionCache(GetCurrentProcess(), (LPVOID)target, movraxjmprax.size());
 		hookData.isHooked = false;
 		return hookData.trampoline;
 	}
@@ -160,4 +146,56 @@ namespace hook::patching {
 		}
 		hookMap.clear();
 	}
+
+	/*
+	///////////IAT HOOKING////////
+
+	uintptr_t installHook(uintptr_t target, uintptr_t detour) {
+
+		LPVOID imageBase = GetModuleHandleA(NULL);
+		PIMAGE_DOS_HEADER dosHeaders = (PIMAGE_DOS_HEADER)imageBase;
+		PIMAGE_NT_HEADERS ntHeaders = (PIMAGE_NT_HEADERS)((DWORD_PTR)imageBase + dosHeaders->e_lfanew);
+
+		PIMAGE_IMPORT_DESCRIPTOR importDescriptor = NULL;
+		IMAGE_DATA_DIRECTORY importsDirectory = ntHeaders->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
+		importDescriptor = (PIMAGE_IMPORT_DESCRIPTOR)(importsDirectory.VirtualAddress + (DWORD_PTR)imageBase);
+		LPCSTR libraryName = NULL;
+		HMODULE library = NULL;
+		PIMAGE_IMPORT_BY_NAME functionName = NULL;
+
+		while (importDescriptor->Name != NULL)
+		{
+			libraryName = (LPCSTR)importDescriptor->Name + (DWORD_PTR)imageBase;
+			library = LoadLibraryA(libraryName);
+
+			if (library)
+			{
+				PIMAGE_THUNK_DATA originalFirstThunk = NULL, firstThunk = NULL;
+				originalFirstThunk = (PIMAGE_THUNK_DATA)((DWORD_PTR)imageBase + importDescriptor->OriginalFirstThunk);
+				firstThunk = (PIMAGE_THUNK_DATA)((DWORD_PTR)imageBase + importDescriptor->FirstThunk);
+
+				while (originalFirstThunk->u1.AddressOfData != NULL)
+				{
+					functionName = (PIMAGE_IMPORT_BY_NAME)((DWORD_PTR)imageBase + originalFirstThunk->u1.AddressOfData);
+
+					// find MessageBoxA address
+					if (std::string(functionName->Name).compare("MessageBoxA") == 0)
+					{
+						SIZE_T bytesWritten = 0;
+						DWORD oldProtect = 0;
+						VirtualProtect((LPVOID)(&firstThunk->u1.Function), 8, PAGE_READWRITE, &oldProtect);
+
+						// swap MessageBoxA address with address of hookedMessageBox
+						firstThunk->u1.Function = (DWORD_PTR)detour;
+					}
+					++originalFirstThunk;
+					++firstThunk;
+				}
+			}
+
+			importDescriptor++;
+		}
+		return 0;
+	}
+	*/
 }

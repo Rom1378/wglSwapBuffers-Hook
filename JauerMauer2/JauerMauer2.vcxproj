@@ -135,7 +135,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>C:\Program Files\Java\jdk8u442-b06\include\win32;C:\Program Files\Java\jdk8u442-b06\include;%(AdditionalIncludeDirectories);$(SolutionDir)Dependences\GLFW\include;$(SolutionDir)Dependences\GLEW\include;$(SolutionDir)Dependences\GLAD\include\glad;$(SolutionDir)Dependences\GLAD\include\KHR</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <Optimization>Custom</Optimization>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
     </ClCompile>
@@ -159,7 +159,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>C:\Program Files\Java\jdk8u442-b06\include\win32;C:\Program Files\Java\jdk8u442-b06\include;%(AdditionalIncludeDirectories);$(SolutionDir)Dependences\GLFW\include;$(SolutionDir)Dependences\GLEW\include;$(SolutionDir)Dependences\GLAD\include\glad;$(SolutionDir)Dependences\GLAD\include\KHR</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <Optimization>Custom</Optimization>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -176,8 +176,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="src\GLHelper.h" />
+    <ClInclude Include="src\Entity.h" />
+    <ClInclude Include="src\GLF.h" />
     <ClInclude Include="src\Hook.h" />
+    <ClInclude Include="src\JavaList.h" />
+    <ClInclude Include="src\MCH.h" />
+    <ClInclude Include="src\W2S.h" />
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
