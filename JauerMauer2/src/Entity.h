@@ -6,25 +6,6 @@ class Entity {
 public:
 	Entity() = default;
 
-    /*
-	Entity(jobject parentObject, jobject objectEntity) : parentObject(parentObject) {
-        this->objectEntity = env->NewGlobalRef(objectEntity);
-        jclass localEntityClass = getObject("net.minecraft.entity.Entity");
-        if (localEntityClass != nullptr) {
-            jcEntity = (jclass)env->NewGlobalRef(localEntityClass);
-            env->DeleteLocalRef(localEntityClass);
-
-            // Get field and method IDs
-            fdRotationYaw = env->GetFieldID(jcEntity, "field_70177_z", "F");
-            fdRotationPitch = env->GetFieldID(jcEntity, "field_70125_A", "F");
-            fdposX = env->GetFieldID(jcEntity, "field_70165_t", "D");
-            fdposY = env->GetFieldID(jcEntity, "field_70163_u", "D");
-            fdposZ = env->GetFieldID(jcEntity, "field_70161_v", "D");
-            mdisSneaking = env->GetMethodID(jcEntity, "func_70093_af", "()Z");
-        }
-	}
-    */
-
     Entity(jobject parentObject, jobject objectEntity) : parentObject(parentObject) {
         if (env == nullptr) return;
 

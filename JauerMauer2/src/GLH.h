@@ -3,8 +3,6 @@
 
 
 namespace GLH {
-	//colors
-	//GLH::
 
 	GLubyte red[3] = { 255, 0, 0 };
 	GLubyte green[3] = { 0,255,0 };

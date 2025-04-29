@@ -8,14 +8,12 @@
 #include "JavaList.h"
 #include "Entity.h"
 
-
 using swap_buffers_fnsig = __int64(__fastcall*)(HDC);
 swap_buffers_fnsig original_wgl_swap_buffers = nullptr;
 uintptr_t m_wgl_swap_buffers = 0;
 
 JNIEnv* env;
 JavaVM* jvm;
-
 
 std::vector<Entity> entityList;
 Entity player;
@@ -188,6 +186,21 @@ DWORD WINAPI inject(HMODULE hmodule) {
 	freopen_s(&fOut, "conout$", "w", stderr);
 
 	std::cout << "Injected" << std::endl;
+
+
+	/*
+	* write the hook
+	OPENGL32.wglSwapBuffers - 48 89 5C 24 08        - mov [rsp+08],rbx
+	OPENGL32.dll+41A75      - 48 89 74 24 10        - mov [rsp+10],rsi
+	OPENGL32.dll+41A7A      - 57                    - push rdi
+	OPENGL32.dll+41A7B      - 48 83 EC 40           - sub rsp,40 { 64 }
+	OPENGL32.dll+41A7F      - 48 8B F1              - mov rsi,rcx
+	OPENGL32.dll+41A82      - 33 FF                 - xor edi,edi
+	OPENGL32.dll+41A84      - E8 B3FCFDFF           - call OPENGL32.wglSwapMultipleBuffers+10AC
+	OPENGL32.dll+41A89      - 85 C0                 - test eax,eax
+	OPENGL32.dll+41A8B      - 74 16                 - je OPENGL32.dll+41AA3
+	OPENGL32.dll+41A8D      - 8D 4F 01              - lea ecx,[rdi+01]
+	*/
 	m_wgl_swap_buffers = (uintptr_t)GetProcAddress(GetModuleHandleA("opengl32.dll"), "wglSwapBuffers");
 	original_wgl_swap_buffers = (swap_buffers_fnsig)hook::patching::installHook(m_wgl_swap_buffers, (uintptr_t)detourFunction, 15);
 
@@ -209,19 +222,7 @@ DWORD WINAPI inject(HMODULE hmodule) {
 
 	updateGameData();
 
-	/*
-	* write the hook
-	OPENGL32.wglSwapBuffers - 48 89 5C 24 08        - mov [rsp+08],rbx
-	OPENGL32.dll+41A75      - 48 89 74 24 10        - mov [rsp+10],rsi
-	OPENGL32.dll+41A7A      - 57                    - push rdi
-	OPENGL32.dll+41A7B      - 48 83 EC 40           - sub rsp,40 { 64 }
-	OPENGL32.dll+41A7F      - 48 8B F1              - mov rsi,rcx
-	OPENGL32.dll+41A82      - 33 FF                 - xor edi,edi
-	OPENGL32.dll+41A84      - E8 B3FCFDFF           - call OPENGL32.wglSwapMultipleBuffers+10AC
-	OPENGL32.dll+41A89      - 85 C0                 - test eax,eax
-	OPENGL32.dll+41A8B      - 74 16                 - je OPENGL32.dll+41AA3
-	OPENGL32.dll+41A8D      - 8D 4F 01              - lea ecx,[rdi+01]
-	*/
+	
 
 	//exit if x pressed
 	while (GetAsyncKeyState(0x58) == 0) {
